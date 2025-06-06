@@ -1,0 +1,1277 @@
+import React, { useState, useEffect } from ‘react’;
+import { ChevronDown, ChevronRight, Play, Check, Calendar, Target, Clock, User, Download, Timer, AlertCircle, RefreshCw } from ‘lucide-react’;
+
+// Complete Jeff Nippard Workout Program Data
+const completeWorkoutProgram = {
+“Week 1”: {
+“_block”: “Foundation”,
+“Upper (Strength Focus)”: [
+{
+name: “45° Incline Barbell Press”,
+technique: “N/A”,
+warmupSets: “2-3”,
+workingSets: “2”,
+reps: “6-8”,
+earlySetRPE: “~6-7”,
+lastSetRPE: “~7-8”,
+rest: “3-5 min”,
+substitution1: “45° Incline DB Press”,
+substitution2: “45° Incline Machine Press”,
+notes: “1 second pause at the bottom of each rep while maintaining tension on the pecs”
+},
+{
+name: “Cable Crossover Ladder”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Pec Deck”,
+substitution2: “Bottom-Half DB Flye”,
+notes: “Do one set with low cable position, one set with medium-height cable position, and one height with a high cable position”
+},
+{
+name: “Wide-Grip Pull-Up”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~6-7”,
+lastSetRPE: “~7-8”,
+rest: “2-3 min”,
+substitution1: “Wide-Grip Lat Pulldown”,
+substitution2: “Dual-Handle Lat Pulldown”,
+notes: “1.5x shoulder width overhand grip. Slow 2-3 second negative. Feel your lats pulling apart on the way down.”
+},
+{
+name: “High-Cable Lateral Raise”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “High-Cable Cuffed Lateral Raise”,
+substitution2: “Lean-In DB Lateral Raise”,
+notes: “Focus on squeezing your lateral delt to move the weight.”
+},
+{
+name: “Pendlay Deficit Row”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “6-8”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “2-3 min”,
+substitution1: “Smith Machine Row”,
+substitution2: “Single-Arm DB Row”,
+notes: “Stand on a bumper plate. Focus on getting a big stretch and touch your stomach/chest on each rep!”
+},
+{
+name: “Overhead Cable Triceps Extension (Bar)”,
+technique: “N/A”,
+warmupSets: “1”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Overhead Cable Triceps Extension (Rope)”,
+substitution2: “DB Skull Crusher”,
+notes: “Optionally pause for 0.5-1 second in the stretched aspect of each rep”
+},
+{
+name: “Bayesian Cable Curl”,
+technique: “N/A”,
+warmupSets: “1”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Seated Super-Bayesian High Cable Curl”,
+substitution2: “Incline DB Stretch Curl”,
+notes: “If you have a left-right bicep size imbalance, do these 1 arm at a time, starting with the weaker arm”
+}
+],
+“Lower (Strength Focus)”: [
+{
+name: “Lying Leg Curl”,
+technique: “N/A”,
+warmupSets: “2”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Seated Leg Curl”,
+substitution2: “Nordic Ham Curl”,
+notes: “Set the machine so that you get the biggest stretch possible at the bottom. Prevent your butt from popping up as you curl.”
+},
+{
+name: “Smith Machine Squat”,
+technique: “N/A”,
+warmupSets: “2-4”,
+workingSets: “2”,
+reps: “6-8”,
+earlySetRPE: “~6-7”,
+lastSetRPE: “~7-8”,
+rest: “3-5 min”,
+substitution1: “DB Bulgarian Split Squat”,
+substitution2: “High-Bar Back Squat”,
+notes: “Once you are under the bar, set up your feet as you would a normal squat and then bring them forward ~3-6 inches”
+},
+{
+name: “Barbell RDL”,
+technique: “N/A”,
+warmupSets: “2-4”,
+workingSets: “2”,
+reps: “6-8”,
+earlySetRPE: “~6-7”,
+lastSetRPE: “~7-8”,
+rest: “2-3 min”,
+substitution1: “DB RDL”,
+substitution2: “Snatch-Grip RDL”,
+notes: “To keep tension on the hamstrings, stop about 75% of the way to full lockout on each rep”
+},
+{
+name: “Leg Extension”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Reverse Nordic”,
+substitution2: “Sissy Squat”,
+notes: “Set the seat back as far as it will go while still feeling comfortable. Use a 2-3 second negative.”
+},
+{
+name: “Standing Calf Raise”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “6-8”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Seated Calf Raise”,
+substitution2: “Leg Press Calf Press”,
+notes: “1-2 second pause at the bottom of each rep. Think about rolling your ankle back and forth on the balls of your feet.”
+},
+{
+name: “Cable Crunch”,
+technique: “N/A”,
+warmupSets: “1”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Decline Weighted Crunch”,
+substitution2: “Machine Crunch”,
+notes: “Round your lower back as you crunch. Maintain a mind-muscle connection with your 6-pack.”
+}
+],
+“Pull (Hypertrophy Focus)”: [
+{
+name: “Neutral-Grip Lat Pulldown”,
+technique: “N/A”,
+warmupSets: “2-3”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~6-7”,
+lastSetRPE: “~7-8”,
+rest: “2-3 min”,
+substitution1: “Neutral-Grip Pull-Up”,
+substitution2: “Dual-Handle Lat Pulldown”,
+notes: “Do these pulldowns with the handle more out in front of you, more like a cross between pullover and a pulldown”
+},
+{
+name: “Chest-Supported Machine Row”,
+technique: “N/A”,
+warmupSets: “2-3”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~6-7”,
+lastSetRPE: “~7-8”,
+rest: “2-3 min”,
+substitution1: “Chest-Supported T-Bar Row”,
+substitution2: “Incline Chest-Supported DB Row”,
+notes: “Flare elbows out at roughly 45° and squeeze your shoulder blades together hard at the top of each rep.”
+},
+{
+name: “Neutral-Grip Seated Cable Row”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “10-12”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “2-3 min”,
+substitution1: “Helms Row”,
+substitution2: “Meadows Row”,
+notes: “Focus on squeezing your shoulder blades together, driving your elbows down and back”
+},
+{
+name: “1-Arm 45° Cable Rear Delt Flye”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “10-12”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Rope Face Pull”,
+substitution2: “Reverse Pec Deck”,
+notes: “Pause for 1-2 seconds in the squeeze of each rep. Contract the rear delts hard!”
+},
+{
+name: “Machine Shrug”,
+technique: “N/A”,
+warmupSets: “2-3”,
+workingSets: “2”,
+reps: “10-12”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Cable Paused Shrug-In”,
+substitution2: “DB Shrug”,
+notes: “Brief pause at the top of the bottom of ROM. Think about pulling your shoulders up to your ears!”
+},
+{
+name: “EZ-Bar Cable Curl”,
+technique: “N/A”,
+warmupSets: “1”,
+workingSets: “2”,
+reps: “10-12”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “EZ-Bar Curl”,
+substitution2: “DB Curl”,
+notes: “Set up the cable at the lowest position. Maintain constant tension on the biceps. Slow, controlled reps!”
+},
+{
+name: “Machine Preacher Curl”,
+technique: “N/A”,
+warmupSets: “1”,
+workingSets: “1”,
+reps: “12-15”,
+earlySetRPE: “N/A”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “EZ-Bar Preacher Curl”,
+substitution2: “DB Preacher Curl”,
+notes: “Smooth, controlled reps. Mind-muscle connection with the biceps.”
+}
+],
+“Push (Hypertrophy Focus)”: [
+{
+name: “Barbell Bench Press”,
+technique: “N/A”,
+warmupSets: “2-4”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~6-7”,
+lastSetRPE: “~7-8”,
+rest: “3-5 min”,
+substitution1: “Machine Chest Press”,
+substitution2: “DB Bench Press”,
+notes: “Set up a comfortable arch, quick pause on the chest and explode up on each rep.”
+},
+{
+name: “Machine Shoulder Press”,
+technique: “N/A”,
+warmupSets: “2-3”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~6-7”,
+lastSetRPE: “~7-8”,
+rest: “2-3 min”,
+substitution1: “Cable Shoulder Press”,
+substitution2: “Seated DB Shoulder Press”,
+notes: “Ensure that your elbows break at least 90°. Mind-muscle connection with your delts.”
+},
+{
+name: “Bottom-Half DB Flye”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “10-12”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Bottom-Half Seated Cable Flye”,
+substitution2: “Low-to-High Cable Crossover”,
+notes: “All reps and sets are to be performed in the bottom half of the ROM. Focus on feeling a deep stretch in your pecs.”
+},
+{
+name: “High-Cable Lateral Raise”,
+technique: “N/A”,
+warmupSets: “1”,
+workingSets: “2”,
+reps: “10-12”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “High-Cable Cuffed Lateral Raise”,
+substitution2: “Lean-In DB Lateral Raise”,
+notes: “Focus on squeezing your lateral delt to move the weight.”
+},
+{
+name: “Overhead Cable Triceps Extension (Bar)”,
+technique: “N/A”,
+warmupSets: “1”,
+workingSets: “2”,
+reps: “10-12”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Overhead Cable Triceps Extension (Rope)”,
+substitution2: “DB Skull Crusher”,
+notes: “Optionally pause for 0.5-1 second in the stretched aspect of each rep”
+},
+{
+name: “Cable Triceps Kickback”,
+technique: “N/A”,
+warmupSets: “1”,
+workingSets: “1”,
+reps: “12-15”,
+earlySetRPE: “N/A”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “DB Triceps Kickback”,
+substitution2: “Bench Dip”,
+notes: “There are two ways you can do this: upright or bent over. Choose the one that feels more comfortable.”
+},
+{
+name: “Roman Chair Leg Raise”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “10-20”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Hanging Leg Raise”,
+substitution2: “Modified Candlestick”,
+notes: “Allow your lower back to round as you curl your legs up. 10-20 reps is a broad range on purpose.”
+}
+],
+“Legs (Hypertrophy Focus)”: [
+{
+name: “Leg Press”,
+technique: “N/A”,
+warmupSets: “2-4”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~6-7”,
+lastSetRPE: “~7-8”,
+rest: “2-3 min”,
+substitution1: “Smith Machine Static Lunge”,
+substitution2: “DB Walking Lunge”,
+notes: “Feet lower on the platform for more quad focus. Control the negative and do a slight pause at the bottom.”
+},
+{
+name: “Seated Leg Curl”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “10-12”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Lying Leg Curl”,
+substitution2: “Nordic Ham Curl”,
+notes: “Lean forward over the machine to get a maximum stretch in your hamstrings.”
+},
+{
+name: “DB Bulgarian Split Squat”,
+technique: “N/A”,
+warmupSets: “2-3”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~6-7”,
+lastSetRPE: “~7-8”,
+rest: “2-3 min”,
+substitution1: “DB Step-Up”,
+substitution2: “Goblet Squat”,
+notes: “Lower all the way down until your front thigh is parallel to the ground. Drive through your front heel.”
+},
+{
+name: “Leg Extension”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “10-12”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Reverse Nordic”,
+substitution2: “Sissy Squat”,
+notes: “Set the seat back as far as it will go while still feeling comfortable. Use a 2-3 second negative.”
+},
+{
+name: “Machine Hip Adduction”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “10-12”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Cable Hip Adduction”,
+substitution2: “Copenhagen Hip Adduction”,
+notes: “Mind-muscle connection with your inner thighs. These are great for adding thigh mass from the front!”
+},
+{
+name: “Machine Hip Abduction”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “10-12”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Cable Hip Abduction”,
+substitution2: “Lateral Band Walk”,
+notes: “If possible, use pads to increase the range of motion on the machine. Lean forward to stretch glutes further.”
+},
+{
+name: “Standing Calf Raise”,
+technique: “N/A”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “10-12”,
+earlySetRPE: “~7-8”,
+lastSetRPE: “~8-9”,
+rest: “1-2 min”,
+substitution1: “Seated Calf Raise”,
+substitution2: “Leg Press Calf Press”,
+notes: “1-2 second pause at the bottom of each rep. Think about rolling your ankle back and forth.”
+}
+]
+},
+“Week 2”: {
+“_block”: “Foundation”,
+“Upper (Strength Focus)”: [
+{
+name: “45° Incline Barbell Press”,
+technique: “Failure”,
+warmupSets: “2-3”,
+workingSets: “3”,
+reps: “6-8”,
+earlySetRPE: “~8-9”,
+lastSetRPE: “10”,
+rest: “3-5 min”,
+substitution1: “45° Incline DB Press”,
+substitution2: “45° Incline Machine Press”,
+notes: “1 second pause at the bottom of each rep while maintaining tension on the pecs”
+},
+{
+name: “Cable Crossover Ladder”,
+technique: “Failure”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~8-9”,
+lastSetRPE: “10”,
+rest: “1-2 min”,
+substitution1: “Pec Deck”,
+substitution2: “Bottom-Half DB Flye”,
+notes: “Do one set with low cable position, one set with medium-height cable position”
+},
+{
+name: “Wide-Grip Pull-Up”,
+technique: “Failure”,
+warmupSets: “1-2”,
+workingSets: “3”,
+reps: “8-10”,
+earlySetRPE: “~8-9”,
+lastSetRPE: “10”,
+rest: “2-3 min”,
+substitution1: “Wide-Grip Lat Pulldown”,
+substitution2: “Dual-Handle Lat Pulldown”,
+notes: “1.5x shoulder width overhand grip. Slow 2-3 second negative.”
+},
+{
+name: “High-Cable Lateral Raise”,
+technique: “Failure”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~8-9”,
+lastSetRPE: “10”,
+rest: “1-2 min”,
+substitution1: “High-Cable Cuffed Lateral Raise”,
+substitution2: “Lean-In DB Lateral Raise”,
+notes: “Focus on squeezing your lateral delt to move the weight.”
+},
+{
+name: “Pendlay Deficit Row”,
+technique: “Failure + LLPs (Extend set)”,
+warmupSets: “1-2”,
+workingSets: “2”,
+reps: “6-8”,
+earlySetRPE: “~8-9”,
+lastSetRPE: “10”,
+rest: “2-3 min”,
+substitution1: “Smith Machine Row”,
+substitution2: “Single-Arm DB Row”,
+notes: “Stand on a bumper plate. Focus on getting a big stretch and touch your stomach/chest on each rep!”
+},
+{
+name: “Overhead Cable Triceps Extension (Bar)”,
+technique: “Failure”,
+warmupSets: “1”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~8-9”,
+lastSetRPE: “10”,
+rest: “1-2 min”,
+substitution1: “Overhead Cable Triceps Extension (Rope)”,
+substitution2: “DB Skull Crusher”,
+notes: “Optionally pause for 0.5-1 second in the stretched aspect of each rep”
+},
+{
+name: “Bayesian Cable Curl”,
+technique: “Failure”,
+warmupSets: “1”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~8-9”,
+lastSetRPE: “10”,
+rest: “1-2 min”,
+substitution1: “Seated Super-Bayesian High Cable Curl”,
+substitution2: “Incline DB Stretch Curl”,
+notes: “If you have a left-right bicep size imbalance, do these 1 arm at a time”
+}
+]
+},
+// Additional weeks would continue with similar structure
+“Week 6”: {
+“_block”: “Ramping”,
+“Upper (Strength Focus)”: [
+{
+name: “45° Incline DB Press”,
+technique: “N/A”,
+warmupSets: “2-3”,
+workingSets: “2”,
+reps: “8-10”,
+earlySetRPE: “~6-7”,
+lastSetRPE: “~7-8”,
+rest: “3-5 min”,
+substitution1: “45° Incline Barbell Press”,
+substitution2: “45° Incline Machine Press”,
+notes: “1 second pause at the bottom of each rep while maintaining tension on the pecs”
+}
+]
+}
+};
+
+// Warmup Protocol Data
+const warmupProtocol = {
+general: [
+{ exercise: “Light Cardio”, duration: “5-10 minutes”, description: “Treadmill, stairmaster, elliptical, bike, etc.” },
+{ exercise: “Arm Swings”, reps: “10 per side”, description: “Dynamic arm movement to warm shoulders” },
+{ exercise: “Arm Circles”, reps: “10 per side”, description: “Forward and backward circles” },
+{ exercise: “Front-to-Back Leg Swings”, reps: “10 per side”, description: “Hold wall for balance if needed” },
+{ exercise: “Side-to-Side Leg Swings”, reps: “10 per side”, description: “Lateral leg movement” },
+{ exercise: “Cable External Rotation”, reps: “15 per side”, description: “(Optional) Light shoulder warmup” }
+],
+specific: {
+“1”: {
+description: “1 Warm-Up Set Listed”,
+protocol: “Use ~60% of your planned working weight for ~6-10 reps (or until you feel warm and loose)”
+},
+“2”: {
+description: “2 Warm-Up Sets Listed”,
+protocol: “Mini warm-up pyramid:\nSet #1 = ~50% of planned working weight for ~6-10 reps\nSet #2 = ~70% of planned working weight for 4-6 reps”
+},
+“3”: {
+description: “3 Warm-Up Sets Listed”,
+protocol: “Full warm-up pyramid:\nSet #1 = ~45% of planned working weight for ~6-10 reps\nSet #2 = ~65% of planned working weight for 4-6 reps\nSet #3 = ~85% of planned working weight for 3-4 reps”
+},
+“4”: {
+description: “4 Warm-Up Sets Listed”,
+protocol: “Full warm-up pyramid:\nSet #1 = ~45% of planned working weight for ~6-10 reps\nSet #2 = ~60% of planned working weight for 4-6 reps\nSet #3 = ~75% of planned working weight for 3-5 reps\nSet #4 = ~85% of planned working weight for 2-4 reps”
+}
+}
+};
+
+const WorkoutTracker = () => {
+const [selectedWeek, setSelectedWeek] = useState(“Week 1”);
+const [selectedWorkout, setSelectedWorkout] = useState(null);
+const [currentExercise, setCurrentExercise] = useState(0);
+const [isWorkoutActive, setIsWorkoutActive] = useState(false);
+const [completedSets, setCompletedSets] = useState({});
+const [workoutLogs, setWorkoutLogs] = useState({});
+const [showSubstitutions, setShowSubstitutions] = useState({});
+const [expandedExercises, setExpandedExercises] = useState({});
+const [showWarmup, setShowWarmup] = useState(false);
+const [warmupCompleted, setWarmupCompleted] = useState(false);
+const [substitutedExercises, setSubstitutedExercises] = useState({});
+const [restTimer, setRestTimer] = useState(null);
+const [timerActive, setTimerActive] = useState(false);
+
+const weeks = Object.keys(completeWorkoutProgram);
+const workouts = selectedWeek ? Object.keys(completeWorkoutProgram[selectedWeek]).filter(key => key !== ‘_block’) : [];
+const exercises = selectedWorkout ? completeWorkoutProgram[selectedWeek][selectedWorkout] : [];
+const currentBlock = selectedWeek ? completeWorkoutProgram[selectedWeek]._block : ‘’;
+
+// Timer functionality
+useEffect(() => {
+let interval = null;
+if (timerActive && restTimer > 0) {
+interval = setInterval(() => {
+setRestTimer(timer => timer - 1);
+}, 1000);
+} else if (restTimer === 0) {
+setTimerActive(false);
+}
+return () => clearInterval(interval);
+}, [timerActive, restTimer]);
+
+const startRestTimer = (restPeriod) => {
+const minutes = parseInt(restPeriod.split(’-’)[0]) || 2;
+setRestTimer(minutes * 60);
+setTimerActive(true);
+};
+
+const formatTime = (seconds) => {
+const mins = Math.floor(seconds / 60);
+const secs = seconds % 60;
+return `${mins}:${secs.toString().padStart(2, '0')}`;
+};
+
+// Exercise substitution
+const substituteExercise = (exerciseIndex, substitutionType) => {
+const exercise = exercises[exerciseIndex];
+const substitution = substitutionType === 1 ? exercise.substitution1 : exercise.substitution2;
+
+```
+setSubstitutedExercises(prev => ({
+  ...prev,
+  [exerciseIndex]: substitution
+}));
+```
+
+};
+
+// CSV Export functionality
+const exportToCSV = () => {
+if (!selectedWorkout || Object.keys(completedSets).length === 0) {
+alert(‘Please complete a workout first!’);
+return;
+}
+
+```
+const workoutDate = new Date().toISOString().split('T')[0];
+const csvData = [];
+
+// Header
+csvData.push(['Jeff Nippard Workout Log']);
+csvData.push(['Date', workoutDate]);
+csvData.push(['Week', selectedWeek]);
+csvData.push(['Workout', selectedWorkout]);
+csvData.push(['Block', currentBlock]);
+csvData.push([]);
+csvData.push(['Exercise', 'Set Type', 'Set #', 'Weight', 'Reps', 'RPE', 'Rest Period', 'Notes']);
+
+exercises.forEach((exercise, exerciseIndex) => {
+  const exerciseName = substitutedExercises[exerciseIndex] || exercise.name;
+  const workingSets = parseInt(exercise.workingSets) || 2;
+  const warmupSets = exercise.warmupSets.includes('-') ? 
+    parseInt(exercise.warmupSets.split('-')[1]) : parseInt(exercise.warmupSets);
+
+  // Warmup sets
+  for (let i = 0; i < (warmupSets || 0); i++) {
+    const setKey = `${exerciseIndex}-warmup-${i}`;
+    const setData = completedSets[setKey] || {};
+    csvData.push([
+      exerciseName,
+      'Warmup',
+      i + 1,
+      setData.weight || '',
+      setData.reps || '',
+      setData.rpe || 'Warmup',
+      exercise.rest,
+      exercise.notes
+    ]);
+  }
+
+  // Working sets
+  for (let i = 0; i < workingSets; i++) {
+    const setKey = `${exerciseIndex}-${i}`;
+    const setData = completedSets[setKey] || {};
+    const isLastSet = i === workingSets - 1;
+    
+    csvData.push([
+      exerciseName,
+      isLastSet ? 'Working (Last)' : 'Working',
+      i + 1,
+      setData.weight || '',
+      setData.reps || '',
+      setData.rpe || '',
+      exercise.rest,
+      exercise.notes
+    ]);
+  }
+  
+  csvData.push([]); // Empty row between exercises
+});
+
+// Convert to CSV string
+const csvString = csvData.map(row => 
+  row.map(cell => `"${cell}"`).join(',')
+).join('\n');
+
+// Download file
+const blob = new Blob([csvString], { type: 'text/csv' });
+const url = window.URL.createObjectURL(blob);
+const link = document.createElement('a');
+link.href = url;
+link.download = `${selectedWeek}_${selectedWorkout.replace(/[^a-zA-Z0-9]/g, '_')}_${workoutDate}.csv`;
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+window.URL.revokeObjectURL(url);
+```
+
+};
+
+const toggleSubstitutions = (exerciseIndex) => {
+setShowSubstitutions(prev => ({
+…prev,
+[exerciseIndex]: !prev[exerciseIndex]
+}));
+};
+
+const toggleExerciseExpansion = (exerciseIndex) => {
+setExpandedExercises(prev => ({
+…prev,
+[exerciseIndex]: !prev[exerciseIndex]
+}));
+};
+
+const startWorkout = (workout) => {
+setSelectedWorkout(workout);
+setIsWorkoutActive(true);
+setCurrentExercise(0);
+setCompletedSets({});
+setSubstitutedExercises({});
+setWarmupCompleted(false);
+setShowWarmup(true);
+};
+
+const completeSet = (exerciseIndex, setIndex, weight, reps, rpe, isWarmup = false) => {
+const key = isWarmup ? `${exerciseIndex}-warmup-${setIndex}` : `${exerciseIndex}-${setIndex}`;
+setCompletedSets(prev => ({
+…prev,
+[key]: { weight, reps, rpe, completed: true }
+}));
+};
+
+const finishWorkout = () => {
+const workoutKey = `${selectedWeek}-${selectedWorkout}-${new Date().toISOString().split('T')[0]}`;
+setWorkoutLogs(prev => ({
+…prev,
+[workoutKey]: {
+…completedSets,
+date: new Date(),
+substitutions: substitutedExercises
+}
+}));
+setIsWorkoutActive(false);
+setSelectedWorkout(null);
+setCurrentExercise(0);
+setCompletedSets({});
+setSubstitutedExercises({});
+setWarmupCompleted(false);
+};
+
+// Warmup Component
+const WarmupSection = () => (
+<div className="bg-white rounded-lg border border-blue-200 p-6 mb-6">
+<div className="flex items-center justify-between mb-4">
+<h3 className="text-lg font-semibold text-blue-900 flex items-center">
+<Timer className="mr-2" size={20} />
+Warm-Up Protocol
+</h3>
+<button
+onClick={() => setWarmupCompleted(true)}
+className={`px-4 py-2 rounded-lg transition-colors ${ warmupCompleted  ? 'bg-green-500 text-white'  : 'bg-blue-500 hover:bg-blue-600 text-white' }`}
+>
+{warmupCompleted ? ‘✓ Completed’ : ‘Mark Complete’}
+</button>
+</div>
+
+```
+  {/* General Warmup */}
+  <div className="mb-6">
+    <h4 className="font-medium text-gray-900 mb-3">General Warm-Up (5-10 minutes)</h4>
+    <div className="space-y-2">
+      {warmupProtocol.general.map((item, index) => (
+        <div key={index} className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+          <div>
+            <span className="font-medium">{item.exercise}</span>
+            {item.duration && <span className="text-blue-600 ml-2">({item.duration})</span>}
+            {item.reps && <span className="text-blue-600 ml-2">({item.reps})</span>}
+          </div>
+          <div className="text-sm text-gray-600">{item.description}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Exercise-Specific Warmup */}
+  <div>
+    <h4 className="font-medium text-gray-900 mb-3">Exercise-Specific Warm-Up</h4>
+    <div className="bg-gray-50 p-4 rounded-lg">
+      <p className="text-sm text-gray-700 mb-3">
+        Perform the warm-up sets as listed in each exercise according to the number of warm-up sets specified:
+      </p>
+      {Object.entries(warmupProtocol.specific).map(([sets, info]) => (
+        <div key={sets} className="mb-3 p-3 bg-white rounded border">
+          <div className="font-medium text-sm">{info.description}</div>
+          <div className="text-xs text-gray-600 mt-1 whitespace-pre-line">{info.protocol}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+```
+
+);
+
+const SetTracker = ({ exercise, exerciseIndex }) => {
+const workingSets = parseInt(exercise.workingSets) || 2;
+const warmupSets = exercise.warmupSets.includes(’-’) ?
+parseInt(exercise.warmupSets.split(’-’)[1]) : parseInt(exercise.warmupSets);
+
+```
+return (
+  <div className="space-y-3">
+    {/* Warmup Sets */}
+    {Array.from({ length: warmupSets || 0 }, (_, i) => {
+      const setKey = `${exerciseIndex}-warmup-${i}`;
+      const isCompleted = completedSets[setKey]?.completed;
+      
+      return (
+        <div key={`warmup-${i}`} className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+          isCompleted ? 'bg-blue-100 border-blue-300' : 'bg-blue-50 border-blue-200'
+        }`}>
+          <div className="w-20 text-sm font-medium text-blue-700">
+            Warmup {i + 1}
+          </div>
+          <div className="flex-1 grid grid-cols-3 gap-2">
+            <input 
+              type="number" 
+              placeholder="Weight" 
+              className="p-2 border rounded text-sm"
+              id={`warmup-weight-${exerciseIndex}-${i}`}
+            />
+            <input 
+              type="number" 
+              placeholder="Reps" 
+              className="p-2 border rounded text-sm"
+              id={`warmup-reps-${exerciseIndex}-${i}`}
+            />
+            <div className="p-2 text-sm text-blue-600 bg-blue-100 rounded text-center">
+              Warmup
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              const weight = document.getElementById(`warmup-weight-${exerciseIndex}-${i}`).value;
+              const reps = document.getElementById(`warmup-reps-${exerciseIndex}-${i}`).value;
+              if (weight && reps) {
+                completeSet(exerciseIndex, i, weight, reps, 'warmup', true);
+              }
+            }}
+            className={`p-2 rounded-full transition-colors ${
+              isCompleted 
+                ? 'bg-blue-500 text-white' 
+                : 'bg-gray-200 hover:bg-gray-300'
+            }`}
+          >
+            <Check size={16} />
+          </button>
+        </div>
+      );
+    })}
+    
+    {/* Working Sets */}
+    {Array.from({ length: workingSets }, (_, i) => {
+      const setKey = `${exerciseIndex}-${i}`;
+      const isCompleted = completedSets[setKey]?.completed;
+      const isLastSet = i === workingSets - 1;
+      const targetRPE = isLastSet ? exercise.lastSetRPE : exercise.earlySetRPE;
+      
+      return (
+        <div key={`working-${i}`} className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
+          isCompleted ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
+        } border`}>
+          <div className="w-20 text-sm font-medium">
+            Set {i + 1}
+            {isLastSet && <div className="text-xs text-red-600">Last Set</div>}
+            {exercise.technique !== "N/A" && (
+              <div className="text-xs text-orange-600 font-bold">{exercise.technique}</div>
+            )}
+          </div>
+          <div className="flex-1 grid grid-cols-4 gap-2">
+            <input 
+              type="number" 
+              placeholder="Weight" 
+              className="p-2 border rounded text-sm"
+              id={`weight-${exerciseIndex}-${i}`}
+            />
+            <input 
+              type="number" 
+              placeholder="Reps" 
+              className="p-2 border rounded text-sm"
+              id={`reps-${exerciseIndex}-${i}`}
+            />
+            <select 
+              className="p-2 border rounded text-sm"
+              id={`rpe-${exerciseIndex}-${i}`}
+            >
+              <option value="">RPE</option>
+              {Array.from({ length: 11 }, (_, i) => (
+                <option key={i + 5} value={i + 5}>{i + 5}</option>
+              ))}
+            </select>
+            <div className="text-xs text-gray-600 flex items-center">
+              Target: {targetRPE}
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              const weight = document.getElementById(`weight-${exerciseIndex}-${i}`).value;
+              const reps = document.getElementById(`reps-${exerciseIndex}-${i}`).value;
+              const rpe = document.getElementById(`rpe-${exerciseIndex}-${i}`).value;
+              if (weight && reps && rpe) {
+                completeSet(exerciseIndex, i, weight, reps, rpe);
+                startRestTimer(exercise.rest);
+              }
+            }}
+            className={`p-2 rounded-full transition-colors ${
+              isCompleted 
+                ? 'bg-green-500 text-white' 
+                : 'bg-gray-200 hover:bg-gray-300'
+            }`}
+          >
+            <Check size={16} />
+          </button>
+        </div>
+      );
+    })}
+    
+    <div className="flex items-center justify-between text-sm text-gray-600 mt-2">
+      <div className="flex items-center">
+        <Clock size={14} className="inline mr-1" />
+        Rest: {exercise.rest}
+      </div>
+      {timerActive && (
+        <div className="flex items-center text-blue-600 font-medium">
+          <Timer size={14} className="mr-1" />
+          {formatTime(restTimer)}
+        </div>
+      )}
+    </div>
+  </div>
+);
+```
+
+};
+
+if (!selectedWorkout) {
+return (
+<div className="min-h-screen bg-gray-50">
+<div className="bg-white shadow-sm border-b">
+<div className="max-w-4xl mx-auto px-6 py-4">
+<h1 className="text-2xl font-bold text-gray-900">
+Jeff Nippard Workout Tracker
+</h1>
+<p className="text-gray-600 mt-1">Bodybuilding Transformation System - Intermediate/Advanced</p>
+</div>
+</div>
+
+```
+    <div className="max-w-4xl mx-auto px-6 py-8">
+      {/* Program Info */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+        <h2 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
+          <AlertCircle className="mr-2" size={20} />
+          Important Program Notes
+        </h2>
+        <div className="space-y-2 text-blue-800 text-sm">
+          <p>• Perform a full general warm-up and exercise-specific warm-up every workout (5-10 mins max)</p>
+          <p>• Week 1: Most sets taken to RPE ~7-9 (deload/intro week)</p>
+          <p>• Week 2+: Last set of every exercise pushed to failure (RPE 10)</p>
+          <p>• Early Sets vs Last Sets: Early sets slightly easier, Last set pushed to failure</p>
+          <p>• Each exercise has substitution options if equipment is unavailable</p>
+        </div>
+      </div>
+
+      {/* Week Selection */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold mb-4 flex items-center">
+          <Calendar className="mr-2" size={20} />
+          Select Week
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          {weeks.map(week => {
+            const block = completeWorkoutProgram[week]._block;
+            return (
+              <button
+                key={week}
+                onClick={() => setSelectedWeek(week)}
+                className={`p-3 rounded-lg border transition-colors ${
+                  selectedWeek === week
+                    ? 'bg-blue-500 text-white border-blue-500'
+                    : 'bg-white hover:bg-gray-50 border-gray-200'
+                }`}
+              >
+                <div className="font-medium">{week}</div>
+                {block && (
+                  <div className={`text-xs mt-1 ${
+                    selectedWeek === week ? 'text-blue-100' : 'text-gray-500'
+                  }`}>
+                    {block} Block
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Workout Selection */}
+      {selectedWeek && (
+        <div>
+          <h2 className="text-lg font-semibold mb-4 flex items-center">
+            <Target className="mr-2" size={20} />
+            {selectedWeek} Workouts {currentBlock && `(${currentBlock} Block)`}
+          </h2>
+          <div className="grid gap-4">
+            {workouts.map(workout => {
+              const exerciseCount = completeWorkoutProgram[selectedWeek][workout].length;
+              return (
+                <div
+                  key={workout}
+                  className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold text-lg text-gray-900">
+                        {workout}
+                      </h3>
+                      <p className="text-gray-600 text-sm">
+                        {exerciseCount} exercises • {currentBlock} Block
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => startWorkout(workout)}
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                    >
+                      <Play size={16} />
+                      Start Workout
+                    </button>
+                  </div>
+                  
+                  {/* Exercise Preview */}
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <div className="grid gap-2">
+                      {completeWorkoutProgram[selectedWeek][workout].slice(0, 3).map((exercise, idx) => (
+                        <div key={idx} className="text-sm text-gray-600 flex justify-between">
+                          <span>• {exercise.name}</span>
+                          <span className="text-gray-400">{exercise.workingSets} sets • {exercise.reps} reps</span>
+                        </div>
+                      ))}
+                      {exerciseCount > 3 && (
+                        <div className="text-sm text-gray-500">
+                          ...and {exerciseCount - 3} more exercises
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+);
+```
+
+}
+
+// Active Workout View
+return (
+<div className="min-h-screen bg-gray-50">
+<div className="bg-white shadow-sm border-b">
+<div className="max-w-4xl mx-auto px-6 py-4">
+<div className="flex items-center justify-between">
+<div>
+<h1 className="text-xl font-bold text-gray-900">
+{selectedWeek} - {selectedWorkout}
+</h1>
+<p className="text-gray-600 text-sm">
+{currentBlock} Block • Exercise {currentExercise + 1} of {exercises.length}
+</p>
+</div>
+<div className="flex gap-2">
+<button
+onClick={exportToCSV}
+className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg flex items-center gap-2 transition-colors"
+>
+<Download size={16} />
+Export CSV
+</button>
+<button
+onClick={() => setSelectedWorkout(null)}
+className=“px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors”
+>
+← Back
+</button>
+</div>
+</div>
+</div>
+</div>
+
+```
+  <div className="max-w-4xl mx-auto px-6 py-8">
+    {/* Warmup Section */}
+    {showWarmup && !warmupCompleted && (
+      <WarmupSection />
+    )}
+
+    {/* Exercises */}
+    <div className="space-y-6">
+      {exercises.map((exercise, exerciseIndex) => (
+        <div
+          key={exerciseIndex}
+          className="bg-white rounded-lg border border-gray-200 overflow-hidden"
+        >
+          <div 
+            className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
+            onClick={() => toggleExerciseExpansion(exerciseIndex)}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <h3 className="font-semibold text-lg text-gray-900">
+                  {substitutedExercises[exerciseIndex] || exercise.name}
+                  {substitutedExercises[exerciseIndex] && (
+                    <span className="ml-2 text-sm text-orange-600">(Substituted)</span>
+                  )}
+                </h3>
+                <div className="flex gap-4 mt-2 text-sm text-gray-600">
+                  <span>Sets: {exercise.workingSets}</span>
+                  <span>Reps: {exercise.reps}</span>
+                  <span>Rest: {exercise.rest}</span>
+                  {exercise.technique !== "N/A" && (
+                    <span className="text-red-600 font-medium">
+                      {exercise.technique}
+                    </span>
+                  )}
+                </div>
+              </div>
+              {expandedExercises[exerciseIndex] ? 
+                <ChevronDown size={20} /> : <ChevronRight size={20} />
+              }
+            </div>
+          </div>
+
+          {expandedExercises[exerciseIndex] && (
+            <div className="px-6 pb-6 border-t border-gray-100">
+              {/* Exercise Notes */}
+              {exercise.notes && (
+                <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Notes:</strong> {exercise.notes}
+                  </p>
+                </div>
+              )}
+
+              {/* Set Tracker */}
+              <SetTracker exercise={exercise} exerciseIndex={exerciseIndex} />
+
+              {/* Substitutions */}
+              <div className="mt-4">
+                <button
+                  onClick={() => toggleSubstitutions(exerciseIndex)}
+                  className="text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1"
+                >
+                  <RefreshCw size={14} />
+                  {showSubstitutions[exerciseIndex] ? 'Hide' : 'Show'} Substitutions
+                </button>
+                
+                {showSubstitutions[exerciseIndex] && (
+                  <div className="mt-2 p-3 bg-gray-50 rounded-lg">
+                    <div className="text-sm space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div><strong>Option 1:</strong> {exercise.substitution1}</div>
+                        <button
+                          onClick={() => substituteExercise(exerciseIndex, 1)}
+                          className="px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white text-xs rounded transition-colors"
+                        >
+                          Use This
+                        </button>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div><strong>Option 2:</strong> {exercise.substitution2}</div>
+                        <button
+                          onClick={() => substituteExercise(exerciseIndex, 2)}
+                          className="px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white text-xs rounded transition-colors"
+                        >
+                          Use This
+                        </button>
+                      </div>
+                      {substitutedExercises[exerciseIndex] && (
+                        <button
+                          onClick={() => setSubstitutedExercises(prev => {
+                            const newSubs = { ...prev };
+                            delete newSubs[exerciseIndex];
+                            return newSubs;
+                          })}
+                          className="mt-2 px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded transition-colors"
+                        >
+                          Reset to Original
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+
+    {/* Finish Workout Button */}
+    <div className="mt-8 text-center">
+      <button
+        onClick={finishWorkout}
+        className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
+      >
+        Finish Workout
+      </button>
+    </div>
+  </div>
+</div>
+```
+
+);
+};
+
+export default WorkoutTracker;
